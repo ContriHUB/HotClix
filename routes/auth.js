@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 const verify = require('./verifyToken')
 const { registerValidation, loginValidation } = require('../validations/userValidations');
-
+const mailVerification = require('../mails/send')
 dotenv.config()
 
 // REGISTER USER 
@@ -34,8 +34,20 @@ router.post('/register', async (req,res) => {
         
         let sql = `INSERT INTO users (username, email, password) 
                     VALUES('${username}', '${email}', '${hashedPassword}')`
-        
+
+
+
+
+
         const dbRes = await dbquery(sql)
+        const token = jwt.sign ({ id: dbRes.insertId },
+            process.env.TOKEN_SECRET,
+            { expiresIn: 86400 });
+           console.log(dbRes.insertId)
+         mailVerification.sendMailVerificationMessage(email,username,token);
+
+
+
         return res.status(201).send({'message': 'user created', id: dbRes.insertId}) 
     }
 
@@ -54,8 +66,34 @@ router.post('/register', async (req,res) => {
 })
 
 
-// LOGIN USER 
+// E Mail Verification
 
+router.get('/verifi', async(req,res)=>{
+       try{
+         const token = req.query.token;
+          if(token == null) {
+                res.send("Error Token is not defined")
+              return;
+          }
+        let isIndeed = jwt.verify(token,process.env.TOKEN_SECRET)
+           let sql = `SELECT * FROM users where id=${isIndeed.id}`
+          const users =  await dbquery(sql)
+
+             if(users.length == 0) {
+                   return res.status(500).send("<h1 style='color: red'>Fake Token Sorry</h1>")
+             }
+         let sql1 = `UPDATE users SET everifi=1 WHERE id=${users[0].id}`
+           await dbquery(sql1)
+       let redirectUrl = 'http://localhost:3000/login'
+       res.send(`<h1>Email verified Successfully</h1><br><a href=${redirectUrl}>Click Here to LogIn</a>`)
+           }
+           catch(e) {
+              console.log(e.toString())
+           }
+})
+
+
+// LOGIN USER
 router.post('/login', async (req, res) => {
 
     // VALIDATE USER DATA 
@@ -84,8 +122,18 @@ router.post('/login', async (req, res) => {
         return res.status(400).send({'error': 'invalid password'})
     }
 
+    // EMail Verification Notice
+     if(user.everifi == 0) {
+          return res.status(400).send({'error': 'Please Verify Email'})
+     }
+
+
+
     // CREATE AND ASSIGN NEW TOKEN
-   
+
+
+
+
     const token = jwt.sign ({ id: user.id }, 
                             process.env.TOKEN_SECRET, 
                             { expiresIn: 86400 });
@@ -123,3 +171,4 @@ router.get('/:userId', async (req, res) => {
 
 
 module.exports = router
+

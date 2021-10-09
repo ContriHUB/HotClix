@@ -18,8 +18,8 @@ const galleryRoutes = require('./routes/gallery')
 const db = mysql.createConnection({
     host        : 'localhost',
     user        : 'root',
-    password    : '4004',
-    database    : 'snaphot'
+    password    : '12345',
+    database    : 'snapshot'
 });
 
 db.connect((err) => {
@@ -49,8 +49,8 @@ app.use('/api/gallery', galleryRoutes)
 
 
 // PORT 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT ;
 
 
 // LISTENING
-app.listen(port, console.log('server running...'))
+app.listen(port, console.log('server running...' + port))

@@ -2,7 +2,7 @@ const   router = require('express').Router(),
         dotenv = require('dotenv'),
         verify = require('./verifyToken'),
         AWS = require('aws-sdk'),
-        uuid = require('uuid/v4'),
+        uuid = require('uuid'),
         { imageUploadValidation } = require('../validations/imageValidations'),
         url = require('url');
 
@@ -54,7 +54,7 @@ const uploadSingleFile = async (file) => {
         plugins: [convertToJpg, mozjpeg({ quality: 40 })]
     })
 
-    const uniqueId = uuid()
+    const uniqueId = uuid.v4()
     const parts = file.name.split('.')
     parts.pop()
     const fileName = parts.join('')

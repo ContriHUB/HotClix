@@ -1,8 +1,8 @@
-PORT = 
-TOKEN_SECRET = 
-AWS_ID = 
-AWS_SECRET = 
-AWS_BUCKET_NAME = 
+PORT = 3001
+TOKEN_SECRET = this_is_secret
+AWS_ID = AKIAR7X337RHRVC3Z5S7
+AWS_SECRET = 52W89cumR6Nl7RER+QUpPP+paTyIwJanhXRGOZpy
+AWS_BUCKET_NAME = hotclix
 
 
 ==> Example
@@ -12,3 +12,6 @@ TOKEN_SECRET = my_strong_secret_is_this
 AWS_ID = KKINZHMUUYNBWI67LAU6
 AWS_SECRET = jZCzanF6Ephs07c8fYwDlTLP0yFnXgD72jJEqqmh
 AWS_BUCKET_NAME = my_first_bucket
+
+
+
