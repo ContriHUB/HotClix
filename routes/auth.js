@@ -34,15 +34,38 @@ router.post('/register', async (req,res) => {
         
         let sql = `INSERT INTO users (username, email, password) 
                     VALUES('${username}', '${email}', '${hashedPassword}')`
+
+                 
+
+
+                    
         
         const dbRes = await dbquery(sql)
 
         const token = jwt.sign ({ id: dbRes.insertId },
             process.env.TOKEN_SECRET,
             { expiresIn: 86400 });
-           
-         mailVerification.sendMailVerificationMessage(email,username,token);
-          return res.status(201).send({'message': 'user created', id: dbRes.insertId}) 
+
+             // Promise Return
+        const response=mailVerification.sendMailVerificationMessage(email,username,token);
+     
+   
+
+            response.then(()=>{
+         return res.status(201).send({'message': 'user created', id: dbRes.insertId})      
+            }).catch(e=>{
+                  // Trying Again
+
+                const  response1 = mailVerification.sendMailVerificationMessage(email,username,token)
+                  response1.then(()=>{
+                    return res.status(201).send({'message': 'user created', id: dbRes.insertId})
+                  }).catch(async e=>{
+                    const sql2 =   `DELETE FROM users WHERE id=${dbRes.insertId}`
+                    await dbquery(sql2)
+                 return res.status(400).send({'error': 'Sorry,Could not register'})
+
+                  })     
+             }) 
     }
 
     // CHECK IF USER WITH THIS EMAIL EXISTS 
