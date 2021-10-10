@@ -3,4 +3,5 @@
 
 1. Created Schema (Harshit Gangwar [harshjoeyit])
     - Import `snaphot.sql` into your mysql database
-2. 
+2. Slightly Changed users Schema and basically add everification coloumn for email verification (Raghvendra Mishra [qubits-fan])
+    - Import `snaphot.sql` into your mysql database after merging my changes       

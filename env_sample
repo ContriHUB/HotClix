@@ -7,6 +7,7 @@ DB_HOST =
 DB_USER = 
 DB_PASSWD = 
 DB_NAME = 
+SANDGRID_API_KEY =
 
 ==> Example
 
@@ -19,3 +20,4 @@ DB_HOST = localhost
 DB_USER = root
 DB_PASSWD = 4004
 DB_NAME = snaphot
+SANDGRID_API_KEY ='SG.sPm7DpV4SI-wZU9l0PHbyQ.pKGg-pTt5YwHfb2QZhZ13QtVfyQlpDhkfDYhLQEHnYCI'
