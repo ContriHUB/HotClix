@@ -1,8 +1,9 @@
 
 import axios from 'axios'
 import getHeaders from '.'
-
-
+import jsZip from 'jszip'
+import chunkPromise from 'bluebird'
+import FileSaver from 'file-saver'
 // GET USER DETAILS
 
 export const getUserDetails = async (userId) => {
@@ -179,4 +180,58 @@ export const requestDownload = async (fileUrl, fileName, fileFormat) => {
         .catch(err => console.error(err));
 
     alert('The photo is downloading...')
+}
+
+// GalleryDownLoad
+ 
+  
+
+export const requestGalleryDownload = async(galleryId, galleryName)=> {
+      try{
+
+        const res = await axios.get(`/api/images?galleryId=${galleryId}`)
+        const images = res.data.images
+       
+           const fileUrls= [];
+
+            images.forEach(image=>{
+                    fileUrls.push(image.file_url);
+           })
+           
+               
+               
+               const download =    url =>{
+                return fetch(url).then(resp=>{
+                        return resp.blob()
+               })
+          }
+         
+           const performDownloadInGroup = (urls,group_cap)=>{
+                    
+               return chunkPromise.map(urls,async url=>{
+                    return await download(url)
+               }, {concurrency: group_cap});
+           }
+       
+       const zipMaker = (blobs) =>{
+             const zip = jsZip();
+             blobs.forEach((blob,i)=>{
+                     zip.file(images[i].name+'.'+images[i].extension,blob);
+             });
+       
+             zip.generateAsync({type: 'blob'}).then(zipFile=>{ 
+                 const fileName = galleryName+'.zip';
+                 return FileSaver.saveAs(zipFile, fileName);
+             }) 
+       }
+       
+       const downloadInZipForm = (urls, group_cap)=>{
+             return performDownloadInGroup(urls,group_cap).then(zipMaker);
+       }
+         await    downloadInZipForm(fileUrls,5)
+          } 
+      catch(e) {
+             console.log(e)
+      }
+       
 }
