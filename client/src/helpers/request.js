@@ -187,51 +187,65 @@ export const requestDownload = async (fileUrl, fileName, fileFormat) => {
   
 
 export const requestGalleryDownload = async(galleryId, galleryName)=> {
-      try{
+    try{
 
         const res = await axios.get(`/api/images?galleryId=${galleryId}`)
         const images = res.data.images
+        if(images.length !== 0) {   
        
-           const fileUrls= [];
-
+            const fileUrls= [];
             images.forEach(image=>{
-                    fileUrls.push(image.file_url);
-           })
-           
-               
-               
-               const download =    url =>{
+            fileUrls.push(image.file_url);
+            })
+        // Function to simply Fetch image from S3
+
+            const download =    url =>{
                 return fetch(url).then(resp=>{
-                        return resp.blob()
+                    return resp.blob()
                })
-          }
-         
-           const performDownloadInGroup = (urls,group_cap)=>{
-                    
-               return chunkPromise.map(urls,async url=>{
+            }
+        //  Function uses a group Promise which assures the complete download of images of a given size 
+        //  As it is not possbile to fetch very large number of images from concurrent Url
+        // So this is approach where we fetch images in small chunk of request
+
+            const performDownloadInGroup = (urls,group_cap)=>{
+                return chunkPromise.map(urls,async url=>{
                     return await download(url)
                }, {concurrency: group_cap});
            }
+
+        // After fetching all required images we send the request to zip them with jsZip Package 
+
+            const zipMaker = (blobs) =>{
+               const zip = jsZip();
+               blobs.forEach((blob,i)=>{
+               zip.file(images[i].name+'.'+images[i].extension,blob);
+          });
        
-       const zipMaker = (blobs) =>{
-             const zip = jsZip();
-             blobs.forEach((blob,i)=>{
-                     zip.file(images[i].name+'.'+images[i].extension,blob);
-             });
-       
-             zip.generateAsync({type: 'blob'}).then(zipFile=>{ 
-                 const fileName = galleryName+'.zip';
-                 return FileSaver.saveAs(zipFile, fileName);
-             }) 
-       }
-       
-       const downloadInZipForm = (urls, group_cap)=>{
-             return performDownloadInGroup(urls,group_cap).then(zipMaker);
-       }
-         await    downloadInZipForm(fileUrls,5)
-          } 
-      catch(e) {
+            zip.generateAsync({type: 'blob'}).then(zipFile=>{ 
+                const fileName = galleryName+'.zip';
+                return FileSaver.saveAs(zipFile, fileName);
+            }) 
+            }   
+        // Main function from where all of the above utilites called 
+
+            const downloadInZipForm = (urls, group_cap)=>{
+                return performDownloadInGroup(urls,group_cap).then(zipMaker);
+            }
+        // Initial point of function call
+
+            await downloadInZipForm(fileUrls,5)
+        }
+        else {
+        
+        // In case if there is no image in Gallery 
+
+            alert("Gallery is empty nothing to download!!!")
+        }
+
+    } 
+    catch(e) {
              console.log(e)
-      }
+    }
        
 }
