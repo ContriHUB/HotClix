@@ -11,5 +11,7 @@
 9. Yashika Jain (Yashikaj14)
 10. [Abhijeet Pandey](https://github.com/abhijeetp94)
 11. Swati Jindal (Swatijindal08)
-12. Shivanand (pinnacle20)
+13. Shivanand (pinnacle20)
+12. [Pranavi](https://github.com/pranavi79)
+13. Vaishnavi Tripathi(vaishnavi1011)
 
