@@ -12,3 +12,5 @@
 10. [Abhijeet Pandey](https://github.com/abhijeetp94)
 11. Swati Jindal (Swatijindal08)
 12. [Pranavi](https://github.com/pranavi79)
+13. Vaishnavi Tripathi(vaishnavi1011)
+
