@@ -11,4 +11,4 @@
 9. Yashika Jain (Yashikaj14)
 10. [Abhijeet Pandey](https://github.com/abhijeetp94)
 11. Swati Jindal (Swatijindal08)
-* [Rajdeep Tiwari](https://contrihub21.herokuapp.com/profile/user/tiwarirajdeep/)
+12. [Rajdeep Tiwari](https://contrihub21.herokuapp.com/profile/user/tiwarirajdeep)
