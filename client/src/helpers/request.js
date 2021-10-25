@@ -144,6 +144,18 @@ export const createGallery = async (body) => {
     }
 }
 
+//RENAME GALLERY
+export const renameGallery = async (galleryId,newName)=>{
+    try{
+        const headers = getHeaders();
+        const res = await axios.put(`/api/gallery/${galleryId}`,JSON.stringify({newName}),{headers})
+        return res;
+    }
+    catch(err){
+        console.log("error in renaming gallery",err.response.data);
+        return err.response.data
+    }
+}
 
 // DELETE GALLERY 
 
