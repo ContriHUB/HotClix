@@ -261,3 +261,15 @@ export const requestGalleryDownload = async(galleryId, galleryName)=> {
     }
        
 }
+// MOVE PHOTO FROM ONE GALLERY TO ANOTHER GALLERY
+export const movePhotoToAnotherGallery = async(imageId,newGalleryId)=>{
+    try{
+        const headers = getHeaders();
+        const res = await axios.put(`/api/images/${imageId}/to/${newGalleryId}`, undefined,{ headers: headers })
+        return res;
+    }
+    catch(err){
+        console.log("error in moving image",err.response.data);
+        return err.response.data
+    }
+}
